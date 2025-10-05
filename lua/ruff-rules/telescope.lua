@@ -1,5 +1,4 @@
-local rules = require "ruff-rules.rules"
-
+---This is a Telescope picker for Ruff rules.
 local pickers = require "telescope.pickers"
 local finders = require "telescope.finders"
 local conf = require("telescope.config").values
@@ -9,30 +8,22 @@ local action_state = require "telescope.actions.state"
 
 local M = {}
 
-
 local get_lines_from_explanation = function(explanation, rule_code)
   if explanation and explanation ~= "" then
-    local normalized_explanation = explanation:gsub("\r\n", "\n"):gsub("\r", "\n")
+    local normalized_explanation =
+      explanation:gsub("\r\n", "\n"):gsub("\r", "\n")
     return vim.split(normalized_explanation, "\n", { plain = true })
   else
     return { "No explanation available for " .. rule_code }
   end
 end
 
-local open_explanation_in_buffer = function(prompt_bufnr)
-  local entry = action_state.get_selected_entry()
-  actions.close(prompt_bufnr)
-
-  if not entry or not entry.obj then
-    print("Could not get entry data.")
-    return
-  end
-
-  vim.cmd("only | enew")
+M.create_buffer_with_explanation = function(entry)
+  vim.cmd "only | enew"
   vim.bo.buftype = "nofile"
   vim.bo.bufhidden = "wipe"
   vim.bo.filetype = "markdown"
-  vim.api.nvim_buf_set_name(0, entry.value .. "-" .. entry.obj.name .. ".md")
+  vim.api.nvim_buf_set_name(0, entry.obj.code .. "-" .. entry.obj.name .. ".md")
 
   local lines = get_lines_from_explanation(entry.obj.explanation, entry.value)
   vim.api.nvim_buf_set_lines(0, 0, -1, false, lines)
@@ -41,11 +32,23 @@ local open_explanation_in_buffer = function(prompt_bufnr)
   vim.bo.modifiable = false
 end
 
-function M.create_picker(group)
+local open_explanation_in_buffer = function(prompt_bufnr)
+  local entry = action_state.get_selected_entry()
+  actions.close(prompt_bufnr)
+
+  if not entry or not entry.obj then
+    print "Could not get entry data."
+    return
+  end
+
+  M.create_buffer_with_explanation(entry)
+end
+
+function M.create_picker(rules)
   local opts = {}
-  pickers.new(opts, {
+  return pickers.new(opts, {
     finder = finders.new_table {
-      results = rules(group),
+      results = rules,
       entry_maker = function(entry)
         return {
           value = entry.code,
@@ -63,7 +66,8 @@ function M.create_picker(group)
       end,
       define_preview = function(self, entry)
         vim.bo[self.state.bufnr].filetype = "markdown"
-        local lines = get_lines_from_explanation(entry.obj.explanation, entry.value)
+        local lines =
+          get_lines_from_explanation(entry.obj.explanation, entry.value)
         vim.api.nvim_buf_set_lines(self.state.bufnr, 0, -1, false, lines)
       end,
     },
@@ -72,7 +76,7 @@ function M.create_picker(group)
       map("n", "<CR>", open_explanation_in_buffer)
       return true
     end,
-  }):find()
+  })
 end
 
 return M

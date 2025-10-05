@@ -6,7 +6,16 @@ return {
   create_picker = picker.create_picker,
   setup = function(opts)
     vim.api.nvim_create_user_command("RuffRules", function(input)
-      picker.create_picker(input.args or "")
+      local selected_rules = rules(input.args or "")
+      if #selected_rules == 0 then
+        print "No rules found for the given input."
+        return
+      end
+      if #selected_rules == 1 then
+        picker.create_buffer_with_explanation { obj = selected_rules[1] }
+        return
+      end
+      picker.create_picker(selected_rules):find()
     end, {
       nargs = "?",
     })
