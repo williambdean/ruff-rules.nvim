@@ -32,7 +32,7 @@ local open_explanation_in_buffer = function(prompt_bufnr)
   vim.bo.buftype = "nofile"
   vim.bo.bufhidden = "wipe"
   vim.bo.filetype = "markdown"
-  vim.api.nvim_buf_set_name(0, "Ruff Rule: " .. entry.value)
+  vim.api.nvim_buf_set_name(0, entry.value .. "-" .. entry.obj.name .. ".md")
 
   local lines = get_lines_from_explanation(entry.obj.explanation, entry.value)
   vim.api.nvim_buf_set_lines(0, 0, -1, false, lines)
