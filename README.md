@@ -2,7 +2,7 @@
 
 This provides a telescope picker for ruff rules 
 
-![Ruff Rules Picker](assets/ruff-rules-preview.mp4)
+![Ruff Rules Picker](assets/ruff-rules-preview.png)
 
 ## Dependencies
 
