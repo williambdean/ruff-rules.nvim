@@ -1,6 +1,6 @@
 # ruff-rules.nvim
 
-This provides a telescope picker for ruff rules 
+This provides buffers and a telescope picker for ruff rules:
 
 ![Ruff Rules Picker](assets/ruff-rules-preview.png)
 
@@ -14,11 +14,11 @@ Using your favorite plugin manager. For example, with `lazy.nvim`:
 
 ```lua
 {
-  "williambdean/ruff-rules.nvim", 
+  "williambdean/ruff-rules.nvim",
   dependencies = {
     "nvim-telescope/telescope.nvim"
     "nvim-lua/plenary.nvim"
-  }, 
+  },
 }
 ```
 
@@ -27,5 +27,18 @@ Using your favorite plugin manager. For example, with `lazy.nvim`:
 The plugin provides the following command:
 
 ```lua
-:RuffRules <optional rule prefix>
+:RuffRules <optional rule prefix or exact rule>
+```
+
+Examples:
+
+```lua
+--- Picker for all rules
+:RuffRules
+
+--- Picker for flake8 rules
+:RuffRules F
+
+--- Picker for a specific rule
+:RuffRules F401
 ```
