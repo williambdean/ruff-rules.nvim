@@ -1,14 +1,15 @@
 local rules = require "ruff-rules.rules"
 local picker = require "ruff-rules.telescope"
+local log = require "ruff-rules.log"
 
 return {
   rules = rules,
   create_picker = picker.create_picker,
-  setup = function(opts)
+  setup = function(_)
     vim.api.nvim_create_user_command("RuffRules", function(input)
       local selected_rules = rules(input.args or "")
       if #selected_rules == 0 then
-        print "No rules found for the given input."
+        log.error "No rules found for the given input."
         return
       end
       if #selected_rules == 1 then

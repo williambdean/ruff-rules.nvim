@@ -2,6 +2,7 @@
 local _, Job = pcall(require, "plenary.job")
 local groups = require "ruff-rules.groups"
 local utils = require "ruff-rules.utils"
+local log = require "ruff-rules.log"
 
 --- Extract the group from a rule code.
 --- For example, "E501" -> "E", "B007" -> "B", "PLR0912" -> "PLR"
@@ -34,7 +35,7 @@ local get_rules = function(group, code)
   job:sync()
   local stderr = table.concat(job:stderr_result(), "\n")
   if stderr ~= "" then
-    print("Error:", stderr)
+    log.error("Failed to fetch rules from Ruff." .. stderr)
     return {}
   end
   local stdout = table.concat(job:result(), "\n")
