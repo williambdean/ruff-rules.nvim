@@ -39,6 +39,6 @@ Examples:
 --- Picker for flake8 rules
 :RuffRules F
 
---- Picker for a specific rule
+--- Pull up buffer for a specific rule
 :RuffRules F401
 ```
