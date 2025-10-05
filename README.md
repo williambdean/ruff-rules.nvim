@@ -6,7 +6,7 @@ This provides buffers and a telescope picker for ruff rules:
 
 ## Dependencies
 
-This relies on `uv` in order to get a version of ruff.
+This relies on [`uv`](https://docs.astral.sh/uv/) in order to get a version of ruff.
 
 ## Installation
 
@@ -42,3 +42,7 @@ Examples:
 --- Pull up buffer for a specific rule
 :RuffRules F401
 ```
+
+## References
+
+- [Ruff Rules](https://docs.astral.sh/ruff/rules/)
