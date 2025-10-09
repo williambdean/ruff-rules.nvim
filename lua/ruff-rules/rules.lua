@@ -21,6 +21,13 @@ local function contains(table, val)
   return false
 end
 
+local base_url = "https://docs.astral.sh/ruff/rules/"
+
+---@param name string
+local format_documenation_url = function(name)
+  return base_url .. name .. "/"
+end
+
 ---@class ruff.Rule
 ---@field code string
 ---@field explanation string
@@ -32,6 +39,7 @@ end
 ---@field number string
 ---@field preview boolean
 ---@field summary string
+---@field documentation_url string
 
 ---@return ruff.Rule[]
 local get_rules = function(group, code)
@@ -59,6 +67,8 @@ local get_rules = function(group, code)
     local parts = utils.split_rule(rule.code)
     rule.group = parts.code
     rule.number = parts.number
+
+    rule.documentation_url = format_documenation_url(rule.name)
   end
 
   if group == "" then
