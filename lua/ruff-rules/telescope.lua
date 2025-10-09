@@ -6,6 +6,8 @@ local previewers = require "telescope.previewers"
 local actions = require "telescope.actions"
 local action_state = require "telescope.actions.state"
 
+local utils = require "ruff-rules.utils"
+
 local M = {}
 
 local get_lines_from_explanation = function(explanation, rule_code)
@@ -18,6 +20,8 @@ local get_lines_from_explanation = function(explanation, rule_code)
   end
 end
 
+local open_in_browser_lhs = "<C-b>"
+
 ---@param rule ruff.Rule
 M.create_explanation_buffer = function(rule)
   vim.cmd "only | enew"
@@ -28,6 +32,14 @@ M.create_explanation_buffer = function(rule)
 
   local lines = get_lines_from_explanation(rule.explanation, rule.code)
   vim.api.nvim_buf_set_lines(0, 0, -1, false, lines)
+
+  vim.api.nvim_buf_set_keymap(0, "n", open_in_browser_lhs, "", {
+    noremap = true,
+    silent = true,
+    callback = function()
+      utils.open_in_browser(rule.documentation_url)
+    end,
+  })
 
   vim.bo.readonly = true
   vim.bo.modifiable = false
@@ -75,6 +87,11 @@ function M.create_picker(rules)
     attach_mappings = function(prompt_bufnr, map)
       map("i", "<CR>", open_explanation_in_buffer)
       map("n", "<CR>", open_explanation_in_buffer)
+      map("i", open_in_browser_lhs, function()
+        actions.close(prompt_bufnr)
+        local entry = action_state.get_selected_entry()
+        utils.open_in_browser(entry.obj.documentation_url)
+      end)
       return true
     end,
   })

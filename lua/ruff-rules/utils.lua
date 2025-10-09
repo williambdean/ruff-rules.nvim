@@ -12,4 +12,19 @@ M.split_rule = function(rule)
   }
 end
 
+--- Taken from octo.nvim
+---@param url string
+function M.open_in_browser(url)
+  local os_name = vim.loop.os_uname().sysname
+  local is_windows = vim.loop.os_uname().version:match "Windows"
+
+  if os_name == "Darwin" then
+    os.execute("open " .. url)
+  elseif os_name == "Linux" then
+    os.execute("xdg-open " .. url)
+  elseif is_windows then
+    os.execute("start " .. url)
+  end
+end
+
 return M
