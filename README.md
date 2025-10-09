@@ -5,6 +5,7 @@ This provides buffers and a telescope picker for ruff rules:
 ![Ruff Rules Picker](assets/ruff-rules-preview.png)
 
 Press `<CR>` to create a buffer with the rule explanation.
+
 Press `<C-b>` from picker or buffer to open the rule in your browser.
 
 ## Dependencies
