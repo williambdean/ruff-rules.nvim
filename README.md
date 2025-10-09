@@ -36,11 +36,34 @@ Examples:
 --- Picker for all rules
 :RuffRules
 
---- Picker for flake8 rules
+--- Picker for Pyflakes rules
 :RuffRules F
 
 --- Pull up buffer for a specific rule
 :RuffRules F401
+```
+
+## Lua API
+
+There is also a Lua API:
+
+```lua
+local ruff_rules = require "ruff-rules"
+
+---@type string[]
+local rule_groups = ruff_rules.groups
+
+---@type ruff.Rule
+local rule_detail = ruff_rules.rule("F401")
+
+---@type ruff.Rule[]
+local all_rule_details = ruff_rules.rules()
+
+---@type ruff.Rule[]
+local pyflakes_rule_details = ruff_rules.rules("F")
+
+--- Create a buffer with specified rule
+ruff_rules.create_explanation_buffer("F401")
 ```
 
 ## References
