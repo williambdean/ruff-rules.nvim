@@ -21,6 +21,19 @@ local function contains(table, val)
   return false
 end
 
+---@class ruff.Rule
+---@field code string
+---@field explanation string
+---@field fix string
+---@field group string
+---@field linter string
+---@field message_formats string[]
+---@field name string
+---@field number string
+---@field preview boolean
+---@field summary string
+
+---@return ruff.Rule[]
 local get_rules = function(group, code)
   local job = Job:new {
     enable_recording = true,

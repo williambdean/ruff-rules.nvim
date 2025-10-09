@@ -18,14 +18,15 @@ local get_lines_from_explanation = function(explanation, rule_code)
   end
 end
 
-M.create_buffer_with_explanation = function(entry)
+---@param rule ruff.Rule
+M.create_explanation_buffer = function(rule)
   vim.cmd "only | enew"
   vim.bo.buftype = "nofile"
   vim.bo.bufhidden = "wipe"
   vim.bo.filetype = "markdown"
-  vim.api.nvim_buf_set_name(0, entry.obj.code .. "-" .. entry.obj.name .. ".md")
+  vim.api.nvim_buf_set_name(0, rule.code .. "-" .. rule.name .. ".md")
 
-  local lines = get_lines_from_explanation(entry.obj.explanation, entry.value)
+  local lines = get_lines_from_explanation(rule.explanation, rule.code)
   vim.api.nvim_buf_set_lines(0, 0, -1, false, lines)
 
   vim.bo.readonly = true
@@ -41,7 +42,7 @@ local open_explanation_in_buffer = function(prompt_bufnr)
     return
   end
 
-  M.create_buffer_with_explanation(entry)
+  M.create_explaination_buffer(entry.obj)
 end
 
 function M.create_picker(rules)
