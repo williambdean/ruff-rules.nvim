@@ -1,6 +1,7 @@
 local rules = require "ruff-rules.rules"
 local picker = require "ruff-rules.telescope"
 local log = require "ruff-rules.log"
+local buffer = require "ruff-rules.buffer"
 
 ---@param code string
 ---@return ruff.Rule|nil
@@ -32,7 +33,7 @@ return {
   create_explanation_buffer = function(code)
     local rule = get_rule(code)
     if rule then
-      picker.create_explanation_buffer(rule)
+      buffer.create_explanation_buffer(rule)
     end
   end,
   setup = function(_)
@@ -43,7 +44,7 @@ return {
         return
       end
       if #selected_rules == 1 then
-        picker.create_explanation_buffer(selected_rules[1])
+        buffer.create_explanation_buffer(selected_rules[1])
         return
       end
       picker.create_picker(selected_rules):find()
