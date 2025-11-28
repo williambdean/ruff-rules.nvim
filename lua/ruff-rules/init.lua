@@ -1,5 +1,5 @@
 local rules = require "ruff-rules.rules"
-local picker = require "ruff-rules.telescope"
+local picker = require "ruff-rules.picker"
 local log = require "ruff-rules.log"
 local buffer = require "ruff-rules.buffer"
 
@@ -24,6 +24,9 @@ local get_rule = function(code)
   return rule_details[1]
 end
 
+---@class ruff.Config
+---@field picker? "telescope"
+
 ---Explanation
 return {
   groups = require "ruff-rules.groups",
@@ -36,7 +39,8 @@ return {
       buffer.create_explanation_buffer(rule)
     end
   end,
-  setup = function(_)
+  ---@param opts? ruff.Config
+  setup = function(opts)
     vim.api.nvim_create_user_command("RuffRules", function(input)
       local selected_rules = rules(input.args or "")
       if #selected_rules == 0 then
@@ -47,7 +51,7 @@ return {
         buffer.create_explanation_buffer(selected_rules[1])
         return
       end
-      picker.create_picker(selected_rules):find()
+      picker.create_picker(selected_rules, opts)
     end, {
       nargs = "?",
     })
