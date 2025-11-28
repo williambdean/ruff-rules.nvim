@@ -9,8 +9,6 @@ local action_state = require "telescope.actions.state"
 local utils = require "ruff-rules.utils"
 local buffer = require "ruff-rules.buffer"
 
-local M = {}
-
 local open_explanation_in_buffer = function(prompt_bufnr)
   local entry = action_state.get_selected_entry()
   actions.close(prompt_bufnr)
@@ -24,7 +22,7 @@ local open_explanation_in_buffer = function(prompt_bufnr)
 end
 
 ---@param rules ruff.Rule[]
-function M.create_picker(rules)
+local function create_picker(rules)
   local opts = {}
   return pickers.new(opts, {
     finder = finders.new_table {
@@ -64,4 +62,7 @@ function M.create_picker(rules)
   })
 end
 
-return M
+---@param rules ruff.Rule[]
+return function(rules)
+  create_picker(rules):find()
+end
