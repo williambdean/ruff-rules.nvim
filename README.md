@@ -30,6 +30,21 @@ Using your favorite plugin manager. For example, with `lazy.nvim`:
 }
 ```
 
+Or with `vim.pack` module:
+
+```lua
+vim.pack.add {
+  "williambdean/ruff-rules.nvim",
+  "nvim-lua/plenary.nvim",
+}
+
+require "ruff-rules".setup {
+  -- picker = "telescope",
+}
+
+```
+
+
 ## Usage
 
 The plugin provides the following command:
