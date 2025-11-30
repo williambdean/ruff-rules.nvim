@@ -1,12 +1,12 @@
 # ruff-rules.nvim
 
-This provides buffers and a telescope picker for ruff rules:
+This provides buffers and a picker for ruff rules:
 
 ![Ruff Rules Picker](assets/ruff-rules-preview.png)
 
 Press `<CR>` to create a buffer with the rule explanation.
 
-Press `<C-b>` from picker or buffer to open the rule in your browser.
+Press `<C-b>` from telescope picker or buffer to open the rule in your browser.
 
 ## Dependencies
 
@@ -20,8 +20,12 @@ Using your favorite plugin manager. For example, with `lazy.nvim`:
 {
   "williambdean/ruff-rules.nvim",
   dependencies = {
-    "nvim-telescope/telescope.nvim"
     "nvim-lua/plenary.nvim"
+    -- "nvim-telescope/telescope.nvim"
+  },
+  ---@type ruff.Config
+  opts = {
+    -- picker = "telescope",
   },
 }
 ```
