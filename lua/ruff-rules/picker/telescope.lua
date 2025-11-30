@@ -7,43 +7,7 @@ local actions = require "telescope.actions"
 local action_state = require "telescope.actions.state"
 
 local utils = require "ruff-rules.utils"
-
-local M = {}
-
-local get_lines_from_explanation = function(explanation, rule_code)
-  if explanation and explanation ~= "" then
-    local normalized_explanation =
-      explanation:gsub("\r\n", "\n"):gsub("\r", "\n")
-    return vim.split(normalized_explanation, "\n", { plain = true })
-  else
-    return { "No explanation available for " .. rule_code }
-  end
-end
-
-local open_in_browser_lhs = "<C-b>"
-
----@param rule ruff.Rule
-M.create_explanation_buffer = function(rule)
-  vim.cmd "only | enew"
-  vim.bo.buftype = "nofile"
-  vim.bo.bufhidden = "wipe"
-  vim.bo.filetype = "markdown"
-  vim.api.nvim_buf_set_name(0, rule.code .. "-" .. rule.name .. ".md")
-
-  local lines = get_lines_from_explanation(rule.explanation, rule.code)
-  vim.api.nvim_buf_set_lines(0, 0, -1, false, lines)
-
-  vim.api.nvim_buf_set_keymap(0, "n", open_in_browser_lhs, "", {
-    noremap = true,
-    silent = true,
-    callback = function()
-      utils.open_in_browser(rule.documentation_url)
-    end,
-  })
-
-  vim.bo.readonly = true
-  vim.bo.modifiable = false
-end
+local buffer = require "ruff-rules.buffer"
 
 local open_explanation_in_buffer = function(prompt_bufnr)
   local entry = action_state.get_selected_entry()
@@ -54,10 +18,11 @@ local open_explanation_in_buffer = function(prompt_bufnr)
     return
   end
 
-  M.create_explaination_buffer(entry.obj)
+  buffer.create_explanation_buffer(entry.obj)
 end
 
-function M.create_picker(rules)
+---@param rules ruff.Rule[]
+local function create_picker(rules)
   local opts = {}
   return pickers.new(opts, {
     finder = finders.new_table {
@@ -80,14 +45,14 @@ function M.create_picker(rules)
       define_preview = function(self, entry)
         vim.bo[self.state.bufnr].filetype = "markdown"
         local lines =
-          get_lines_from_explanation(entry.obj.explanation, entry.value)
+          buffer.get_lines_from_explanation(entry.obj.explanation, entry.value)
         vim.api.nvim_buf_set_lines(self.state.bufnr, 0, -1, false, lines)
       end,
     },
     attach_mappings = function(prompt_bufnr, map)
       map("i", "<CR>", open_explanation_in_buffer)
       map("n", "<CR>", open_explanation_in_buffer)
-      map("i", open_in_browser_lhs, function()
+      map("i", buffer.open_in_browser_lhs, function()
         actions.close(prompt_bufnr)
         local entry = action_state.get_selected_entry()
         utils.open_in_browser(entry.obj.documentation_url)
@@ -97,4 +62,7 @@ function M.create_picker(rules)
   })
 end
 
-return M
+---@param rules ruff.Rule[]
+return function(rules)
+  create_picker(rules):find()
+end
